@@ -4,32 +4,57 @@ using UnityEngine;
 
 public class Pickup : MonoBehaviour
 {
-    [SerializeField] GameObject highlightSign;
+    public GameObject presentItem;
+    public GameObject pickudItem;
+
+    [SerializeField] private GameObject highlightSign;
+    [SerializeField] private float throwSpeed;
     private float highlightSignHight;
     private Transform arm;
 
-    public GameObject presentItem;
-    public GameObject pickudItem;
+    Vector3 armRotation;
+
+    Camera cam;
+    bool mouseDown;
+
     // Start is called before the first frame update
     void Start()
     {
+        mouseDown = false;
         highlightSignHight = highlightSign.transform.position.y;
         arm = transform.GetChild(0);
+
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked; 
+
+        cam = Camera.main;
+        armRotation = arm.eulerAngles;
     }
 
 
     void Update(){
+        mouseDown = Input.GetMouseButtonDown(0);
+        ArmMovement();
         PickItem();
         ThrowItem();
     }
 
 
+    void ArmMovement(){
+        arm.eulerAngles = new Vector3(
+            armRotation.x,
+            armRotation.y,
+            armRotation.z + cam.transform.eulerAngles.x);
+    }
+
+
     void PickItem(){
-        if( presentItem && Input.GetKeyDown("f") ){
+        if( presentItem && mouseDown ){
+            mouseDown = false;
             pickudItem = presentItem;
             presentItem = null;
             highlightSign.SetActive(false);
-            pickudItem.GetComponent<Rigidbody>().isKinematic = false;
+            pickudItem.GetComponent<Rigidbody>().isKinematic = true;
             pickudItem.GetComponent<Rigidbody>().detectCollisions = false;
 
         }
@@ -45,7 +70,13 @@ public class Pickup : MonoBehaviour
 
     void ThrowItem(){
         if(pickudItem){
-            return;
+            if(mouseDown){
+                mouseDown = false;
+                pickudItem.GetComponent<Rigidbody>().isKinematic = false;
+                pickudItem.GetComponent<Rigidbody>().detectCollisions = true;
+                pickudItem.GetComponent<Rigidbody>().AddForce(cam.transform.forward*throwSpeed, ForceMode.Impulse);
+                pickudItem = null;
+            }
         }
     }
 

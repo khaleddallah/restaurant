@@ -14,6 +14,7 @@ public class Movement : MonoBehaviour
     Vector3 position;
     Rigidbody rb;
     float input;
+    Camera cam;
 
 
     void Start()
@@ -25,6 +26,7 @@ public class Movement : MonoBehaviour
         position_angle = Mathf.Atan2(directionOfTable.z, directionOfTable.x)*Mathf.Rad2Deg;
         Debug.Log("start pos_angle:"+position_angle);
 
+        cam = Camera.main;
     }
 
 
@@ -40,7 +42,7 @@ public class Movement : MonoBehaviour
         position.x = radius * Mathf.Cos(position_angle*Mathf.Deg2Rad);
         position.z = radius * Mathf.Sin(position_angle*Mathf.Deg2Rad);
         rb.MovePosition(position);
-        rb.MoveRotation(Quaternion.Euler(Vector3.up*(-position_angle)));
+        rb.MoveRotation(Quaternion.Euler(Vector3.up*(90+cam.transform.eulerAngles.y)));
     }
 
 }
