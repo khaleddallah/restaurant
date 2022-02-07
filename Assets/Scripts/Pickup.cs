@@ -84,12 +84,21 @@ public class Pickup : MonoBehaviour
         if(pickudItem) return;
         if(other.transform.CompareTag("Item")){
             highlightSign.SetActive(true);
-            highlightSign.transform.position = new Vector3 (
-                other.transform.position.x,
-                highlightSignHight,
-                other.transform.position.z
-            );
+            highlightSign.transform.position = GetHighlightSignPosition(other.transform.position)+Vector3.up*0.01f;
             presentItem = other.gameObject;
+        }
+    }
+
+    Vector3 GetHighlightSignPosition(Vector3 itemPosition){
+        Ray ray = new Ray(itemPosition, Vector3.down);
+        RaycastHit hitInfo;
+        if(Physics.Raycast(ray, out hitInfo)){
+            Debug.Log("GetPosItem:"+hitInfo.point);
+            return hitInfo.point;
+        }
+        else{
+            Debug.Log("error");
+            return itemPosition;
         }
     }
 
