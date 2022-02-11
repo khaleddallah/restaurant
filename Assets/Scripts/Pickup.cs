@@ -34,18 +34,12 @@ public class Pickup : MonoBehaviour
 
     void Update(){
         mouseDown = Input.GetMouseButtonDown(0);
-        ArmMovement();
         PickItem();
         ThrowItem();
     }
 
 
-    void ArmMovement(){
-        arm.eulerAngles = new Vector3(
-            armRotation.x,
-            armRotation.y,
-            armRotation.z + cam.transform.eulerAngles.x);
-    }
+
 
 
     void PickItem(){
@@ -93,7 +87,6 @@ public class Pickup : MonoBehaviour
         Ray ray = new Ray(itemPosition, Vector3.down);
         RaycastHit hitInfo;
         if(Physics.Raycast(ray, out hitInfo)){
-            Debug.Log("GetPosItem:"+hitInfo.point);
             return hitInfo.point;
         }
         else{

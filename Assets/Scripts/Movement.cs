@@ -4,45 +4,52 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
-
-    [SerializeField] private Transform table;
-    [SerializeField] private float tableOffset; 
     [SerializeField] private float speed;
+    [SerializeField] private float smoothTime;
+    [SerializeField] private float angleSmoothTime;
 
-    float radius;
-    float position_angle;
-    Vector3 position;
+
     Rigidbody rb;
-    float input;
+    Vector3 input;
+    Vector3 velocity;
+    float directionVelocity;
+    float angleVelocity;
+    float smoothMagnitude;
+    
+    Vector3 position;
+    Vector3 angle;
     Camera cam;
 
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        radius = table.localScale.x/2 + tableOffset;
-
-        Vector3 directionOfTable = transform.position - table.position;
-        position_angle = Mathf.Atan2(directionOfTable.z, directionOfTable.x)*Mathf.Rad2Deg;
-        Debug.Log("start pos_angle:"+position_angle);
-
         cam = Camera.main;
     }
 
 
     void Update()
     {
-        input = Input.GetAxisRaw("Horizontal");
+        input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
+        float directionMagnitude = input.magnitude;
+        smoothMagnitude = Mathf.SmoothDamp(smoothMagnitude, directionMagnitude, ref directionVelocity, smoothTime);
+
+
+        float angleTemp = transform.eulerAngles.y + Mathf.Atan2(input.x, input.z) * Mathf.Rad2Deg;
+        Vector3 dir = new Vector3(Mathf.Sin(angleTemp * Mathf.Deg2Rad), 0, Mathf.Cos(angleTemp * Mathf.Deg2Rad));
+        velocity = dir.normalized * speed * smoothMagnitude;
+
+
+        float targetAngle = cam.transform.eulerAngles.y;
+        angle = Vector3.up * Mathf.SmoothDampAngle(angle.y, targetAngle, ref angleVelocity, angleSmoothTime);
+
+
     }
 
     void FixedUpdate()
     {
-        position_angle += input * speed * Time.fixedDeltaTime;
-        position = table.position;
-        position.x = radius * Mathf.Cos(position_angle*Mathf.Deg2Rad);
-        position.z = radius * Mathf.Sin(position_angle*Mathf.Deg2Rad);
-        rb.MovePosition(position);
-        rb.MoveRotation(Quaternion.Euler(Vector3.up*(90+cam.transform.eulerAngles.y)));
+        rb.MovePosition(rb.position + velocity*Time.fixedDeltaTime);
+        rb.MoveRotation(Quaternion.Euler(angle));
     }
 
 }
