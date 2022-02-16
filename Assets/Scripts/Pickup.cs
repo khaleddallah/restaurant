@@ -18,9 +18,12 @@ public class Pickup : NetworkBehaviour
     Camera cam;
     public bool mouseDown;
 
+    public GameObject items;
+
     // Start is called before the first frame update
     void Start()
     {
+        items = GameObject.FindGameObjectWithTag("Items");
         mouseDown = false;
         arm = transform.GetChild(0);
         cam = Camera.main;
@@ -36,46 +39,23 @@ public class Pickup : NetworkBehaviour
     void Update(){
         if(isLocalPlayer){
             mouseDown = Input.GetMouseButtonDown(0);
-            if(mouseDown){
-                SetMouseDownOnServer(mouseDown);
-            }
         }
-        // PickItem();
-        // ThrowItem();
+        PickItem();
+        ThrowItem();
     }
 
-
-    [Command]
-    void SetMouseDownOnServer(bool x){
-        Debug.Log("# netId"+netId+" :"+x);
-        mouseDown = x;
-        SetMouseDownOnClient(x);
-    }
-
-    [ClientRpc]
-    void SetMouseDownOnClient(bool x){
-        Debug.Log("netId"+netId+" :"+x);
-        if(!isLocalPlayer){
-            mouseDown = x;
-        }
-    }
 
 
     void PickItem(){
-        if(isLocalPlayer){
-            if( presentItem && mouseDown ){
-                mouseDown = false;
-                pickudItem = presentItem;
-                presentItem = null;
-            
-                SetPickedItemOnServer(pickudItem);
-                SetPresentItemOnServer(presentItem);
-                highlightSign.SetActive(false);
-                
-                pickudItem.GetComponent<Rigidbody>().isKinematic = true;
-                pickudItem.GetComponent<Rigidbody>().detectCollisions = false;
-
-            }
+        if( presentItem && mouseDown ){
+            mouseDown = false;
+            pickudItem = presentItem;
+            presentItem = null;
+            pickudItem.GetComponent<Rigidbody>().isKinematic = true;
+            pickudItem.GetComponent<Rigidbody>().detectCollisions = false;
+            highlightSign.SetActive(false);
+            int index0 = pickudItem.transform.GetSiblingIndex();
+            PickItemOnServer(index0);
         }
         if(pickudItem){
             pickudItem.transform.position = new Vector3(
@@ -88,15 +68,16 @@ public class Pickup : NetworkBehaviour
 
 
     [Command]
-    void SetPickedItemOnServer(GameObject obj){
-        presentItem = obj;
-        SetPickedItemOnClient(obj);
+    void PickItemOnServer(int index0){
+        PickItemOnClient(index0);
     }
 
-
     [ClientRpc]
-    void SetPickedItemOnClient(GameObject obj){
-        presentItem = gameObject;
+    void PickItemOnClient(int index0){
+        if(isLocalPlayer) return;
+        pickudItem = items.transform.GetChild(index0).gameObject;
+        pickudItem.GetComponent<Rigidbody>().isKinematic = true;
+        pickudItem.GetComponent<Rigidbody>().detectCollisions = false;
     }
 
 
@@ -108,8 +89,8 @@ public class Pickup : NetworkBehaviour
                     pickudItem.GetComponent<Rigidbody>().isKinematic = false;
                     pickudItem.GetComponent<Rigidbody>().detectCollisions = true;
                     pickudItem.GetComponent<Rigidbody>().AddForce(cam.transform.forward*throwSpeed, ForceMode.Impulse);
+                    ThrowOnServer(pickudItem.transform.position, cam.transform.forward*throwSpeed);
                     pickudItem = null;
-                    ThrowOnServer(cam.transform.forward*throwSpeed);
                 }
             }
 
@@ -117,20 +98,17 @@ public class Pickup : NetworkBehaviour
     }
 
 
+
     [Command]
-    void ThrowOnServer(Vector3 direction){
-        mouseDown = false;
-        pickudItem.GetComponent<Rigidbody>().isKinematic = false;
-        pickudItem.GetComponent<Rigidbody>().detectCollisions = true;
-        pickudItem.GetComponent<Rigidbody>().AddForce(direction, ForceMode.Impulse);
-        pickudItem = null;
-        ThrowOnClient(direction);
+    void ThrowOnServer(Vector3 origin, Vector3 direction){
+        ThrowOnClient(origin, direction);
     }
 
 
     [ClientRpc]
-    void ThrowOnClient(Vector3 direction){
-        mouseDown = false;
+    void ThrowOnClient(Vector3 origin, Vector3 direction){
+        if(isLocalPlayer) return;
+        pickudItem.transform.position = origin;
         pickudItem.GetComponent<Rigidbody>().isKinematic = false;
         pickudItem.GetComponent<Rigidbody>().detectCollisions = true;
         pickudItem.GetComponent<Rigidbody>().AddForce(direction, ForceMode.Impulse);
@@ -146,26 +124,21 @@ public class Pickup : NetworkBehaviour
             highlightSign.SetActive(true);
             highlightSign.transform.position = GetHighlightSignPosition(other.transform.position)+Vector3.up*0.01f;
             presentItem = other.gameObject;
-            SetPresentItemOnServer(presentItem);
         }
     }
 
 
-    [Command]
-    void SetPresentItemOnServer(GameObject obj){
-        presentItem = obj;
-        SetPresentItemOnClient(obj);
+
+    void OnTriggerExit(Collider other){
+        if(!isLocalPlayer) return;
+        if(pickudItem) return;
+        if(other.transform.CompareTag("Item")){
+            if(other.gameObject == presentItem){
+                presentItem = null;
+                highlightSign.SetActive(false);
+            }
+        }
     }
-
-
-    [ClientRpc]
-    void SetPresentItemOnClient(GameObject obj){
-        presentItem = gameObject;
-    }
-
-
-
-
 
 
     Vector3 GetHighlightSignPosition(Vector3 itemPosition){
@@ -180,17 +153,7 @@ public class Pickup : NetworkBehaviour
         }
     }
 
-    void OnTriggerExit(Collider other){
-        if(!isLocalPlayer) return;
-        if(pickudItem) return;
-        if(other.transform.CompareTag("Item")){
-            if(other.gameObject == presentItem){
-                presentItem = null;
-                SetPresentItemOnServer(presentItem);
-                highlightSign.SetActive(false);
-            }
-        }
-    }
+
 
 
 }

@@ -7,6 +7,7 @@ TagManager:
   - Item
   - Cam0
   - HighlightSign
+  - Items
   layers:
   - Default
   - TransparentFX

@@ -96,9 +96,9 @@ GameObject:
   - component: {fileID: 3575441819801357887}
   - component: {fileID: 3575441819801357888}
   - component: {fileID: 3575441819801357886}
+  - component: {fileID: 2623104504267959892}
   - component: {fileID: 3575441819801357891}
   - component: {fileID: 3575441819801357890}
-  - component: {fileID: 2623104504267959892}
   m_Layer: 0
   m_Name: PlayerSika
   m_TagString: Untagged
@@ -231,6 +231,26 @@ MonoBehaviour:
   speed: 8
   smoothTime: 0.1
   angleSmoothTime: 0.1
+--- !u!114 &2623104504267959892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3575441819801357881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: faf7e26271a106e0d9b1c4fe4df08962, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  presentItem: {fileID: 0}
+  pickudItem: {fileID: 0}
+  highlightSign: {fileID: 0}
+  throwSpeed: 25
+  mouseDown: 0
+  items: {fileID: 0}
 --- !u!114 &3575441819801357891
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -282,24 +302,6 @@ MonoBehaviour:
   showGizmos: 0
   showOverlay: 0
   overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
---- !u!114 &2623104504267959892
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3575441819801357881}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: faf7e26271a106e0d9b1c4fe4df08962, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  presentItem: {fileID: 0}
-  pickudItem: {fileID: 0}
-  highlightSign: {fileID: 0}
-  throwSpeed: 5
 --- !u!1 &3575441820323890999
 GameObject:
   m_ObjectHideFlags: 0

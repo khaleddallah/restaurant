@@ -38,12 +38,12 @@ public class XnetworkManager : NetworkManager
     void OnCreateCharacter(NetworkConnection conn, Msg x)
     {
         if(numPlayers==0){
-            Debug.Log("whites");
+            Debug.Log("sika");
             GameObject player0 = (GameObject) Instantiate(sika, sikaTransform.position, sikaTransform.rotation);
             NetworkServer.AddPlayerForConnection(conn, player0);
         }
         else{
-            Debug.Log("blacks");
+            Debug.Log("bino");
             GameObject player1 = (GameObject) Instantiate(bino, binoTransform.position, binoTransform.rotation);
             NetworkServer.AddPlayerForConnection(conn, player1);
         }
