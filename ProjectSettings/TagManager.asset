@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Item
+  - Cam0
+  - HighlightSign
   layers:
   - Default
   - TransparentFX
