@@ -12,6 +12,8 @@ public class Movement : NetworkBehaviour
     CinemachineVirtualCamera normalCvc;
 
     Rigidbody rb;
+    Vector3 input0;
+    Vector3 lastInput;
     Vector3 input;
     Vector3 velocity;
     float directionVelocity;
@@ -25,8 +27,12 @@ public class Movement : NetworkBehaviour
 
     Animator anim;
 
+    public bool isEnabled; 
+
+
     void Start()
     {
+        isEnabled = true;
         anim = GetComponent<Animator>();
         if(!isLocalPlayer) return;
         rb = GetComponent<Rigidbody>();
@@ -37,13 +43,21 @@ public class Movement : NetworkBehaviour
 
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked; 
+        lastInput = new Vector3(0f, 0f, 0f);
     }
 
 
     void Update()
     {
+
+        if(!isLocalPlayer){
+            anim.SetFloat("VelocityX", Vector3.Dot(input0, Vector3.right), 0.1f, Time.deltaTime);
+            anim.SetFloat("VelocityZ", Vector3.Dot(input0, Vector3.forward), 0.1f, Time.deltaTime);
+        }
+
         if(!isLocalPlayer) return;
-        Vector3 input0 = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+        if(!isEnabled) return;
+        input0 = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
         input = input0.normalized;
         float directionMagnitude = input.magnitude;
         smoothMagnitude = Mathf.SmoothDamp(smoothMagnitude, directionMagnitude, ref directionVelocity, smoothTime);
@@ -55,14 +69,36 @@ public class Movement : NetworkBehaviour
         float targetAngle = cam.transform.eulerAngles.y;
         angle = Vector3.up * Mathf.SmoothDampAngle(angle.y, targetAngle, ref angleVelocity, angleSmoothTime);
 
-
         anim.SetFloat("VelocityX", Vector3.Dot(input0, Vector3.right), 0.1f, Time.deltaTime);
         anim.SetFloat("VelocityZ", Vector3.Dot(input0, Vector3.forward), 0.1f, Time.deltaTime);
+
+        if(input0 != lastInput){
+            Debug.Log("SYNC");
+            lastInput = input0;
+            SyncInputOnServer(input0);
+        }
+
     }
+
+
+    [Command]
+    void SyncInputOnServer(Vector3 _input)
+    {
+        SyncInputOnClient(_input);
+    }
+
+
+    [ClientRpc]
+    void SyncInputOnClient(Vector3 _input)
+    {
+        input0 = _input;
+    }
+
 
     void FixedUpdate()
     {
         if(!isLocalPlayer) return;
+        if(!isEnabled) return;
         rb.MovePosition(rb.position + velocity*Time.fixedDeltaTime);
         rb.MoveRotation(Quaternion.Euler(angle));
     }
