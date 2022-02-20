@@ -23,8 +23,11 @@ public class Movement : NetworkBehaviour
     Camera cam;
 
 
+    Animator anim;
+
     void Start()
     {
+        anim = GetComponent<Animator>();
         if(!isLocalPlayer) return;
         rb = GetComponent<Rigidbody>();
         cam = Camera.main;
@@ -40,7 +43,8 @@ public class Movement : NetworkBehaviour
     void Update()
     {
         if(!isLocalPlayer) return;
-        input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
+        Vector3 input0 = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+        input = input0.normalized;
         float directionMagnitude = input.magnitude;
         smoothMagnitude = Mathf.SmoothDamp(smoothMagnitude, directionMagnitude, ref directionVelocity, smoothTime);
 
@@ -52,6 +56,8 @@ public class Movement : NetworkBehaviour
         angle = Vector3.up * Mathf.SmoothDampAngle(angle.y, targetAngle, ref angleVelocity, angleSmoothTime);
 
 
+        anim.SetFloat("VelocityX", Vector3.Dot(input0, Vector3.right), 0.1f, Time.deltaTime);
+        anim.SetFloat("VelocityZ", Vector3.Dot(input0, Vector3.forward), 0.1f, Time.deltaTime);
     }
 
     void FixedUpdate()

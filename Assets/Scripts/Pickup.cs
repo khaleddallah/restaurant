@@ -11,7 +11,7 @@ public class Pickup : NetworkBehaviour
     [SerializeField] private GameObject highlightSign;
     [SerializeField] private float throwSpeed;
     private float highlightSignHight;
-    private Transform arm;
+    public Transform arm;
 
     Vector3 armRotation;
 
@@ -25,7 +25,7 @@ public class Pickup : NetworkBehaviour
     {
         items = GameObject.FindGameObjectWithTag("Items");
         mouseDown = false;
-        arm = transform.GetChild(0);
+        // arm = transform.GetChild(0);
         cam = Camera.main;
         armRotation = arm.eulerAngles;
         if(isLocalPlayer){
@@ -60,7 +60,7 @@ public class Pickup : NetworkBehaviour
         if(pickudItem){
             pickudItem.transform.position = new Vector3(
                 arm.position.x,
-                arm.position.y+arm.localScale.y+pickudItem.transform.localScale.y,
+                arm.position.y,//+arm.localScale.y+pickudItem.transform.localScale.y,
                 arm.position.z);
             pickudItem.transform.rotation = transform.rotation;
         }
