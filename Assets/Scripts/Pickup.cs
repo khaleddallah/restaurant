@@ -140,10 +140,13 @@ public class Pickup : NetworkBehaviour
                     mouseDown = false;
                     // Schedual AddForce
                     throwing = true;
+                    pickudItem.GetComponent<Brick>().isThrowing = true;
+                    Debug.Log("# Throw Item");
                     GetComponent<Movement>().isEnabled = false;
                     // ThrowOnServer(pickudItem.transform.position, cam.transform.forward*throwSpeed);
                     originRemote = rigFinal.transform.GetChild(0).GetChild(0).position;
                     directionRemote = cam.transform.forward*throwSpeed;
+
                     ThrowOnServer(originRemote, directionRemote);
                     rigStarterWeight = 0;
                     rigFinalWeight = 1;
@@ -167,6 +170,7 @@ public class Pickup : NetworkBehaviour
         throwing = true;
         originRemote = origin;
         directionRemote = direction;
+        pickudItem.GetComponent<Brick>().isThrowing = true;
         GetComponent<Movement>().isEnabled = false;
         rigStarterWeight = 0;
         rigFinalWeight = 1;

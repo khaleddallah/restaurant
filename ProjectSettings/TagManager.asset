@@ -8,6 +8,7 @@ TagManager:
   - Cam0
   - HighlightSign
   - Items
+  - bullet
   layers:
   - Default
   - TransparentFX
