@@ -1369,6 +1369,7 @@ GameObject:
   - component: {fileID: 6666065962476135201}
   - component: {fileID: 6666065962476135200}
   - component: {fileID: 6666065962476135231}
+  - component: {fileID: 7607874744872326783}
   - component: {fileID: 4733258893432866976}
   - component: {fileID: 4733258893432866979}
   m_Layer: 0
@@ -1554,6 +1555,24 @@ MonoBehaviour:
   rigStarterWeight: 0
   rigFinalWeight: 0
   throwSpeedAnimation: 100
+--- !u!114 &7607874744872326783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6666065962476135227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6cdafc78145b532a689a7d20ca611c87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  money: 0
+  score: 0
+  health: 0
+  hurtValue: 34
 --- !u!114 &4733258893432866976
 MonoBehaviour:
   m_ObjectHideFlags: 0
