@@ -12,8 +12,8 @@ public class Hitted : MonoBehaviour
     public float timeOfHitting = 0.25f;
 
 
-    private Collider[] colliders;
-    private Rigidbody[] rbs;
+    public Collider[] colliders;
+    public Rigidbody[] rbs;
     private Transform[] transforms;
     private Vector3[] localpositions;
     private Vector3[] localrotations;
@@ -26,7 +26,7 @@ public class Hitted : MonoBehaviour
     {
         colliders = GetComponentsInChildren<Collider>();
         rbs = GetComponentsInChildren<Rigidbody>();
-        colliders = colliders.Where((source, index) => index != 0).ToArray();
+        colliders = colliders.Where((source, index) => index > 1).ToArray();
         rbs = rbs.Where((source, index) => index != 0).ToArray();
         transforms = new Transform[colliders.Length];
 
@@ -62,6 +62,12 @@ public class Hitted : MonoBehaviour
     }
 
 
+    public void Dead(){
+        Debug.Log("dead");
+        rbs[0].constraints = RigidbodyConstraints.None;
+        RagdollOn();
+    }
+
 
     void Update()
     {
@@ -76,6 +82,12 @@ public class Hitted : MonoBehaviour
     }
 
 
+
+    // void OnCollisionEnter(Collision other){
+    //     if(other.gameObject.CompareTag("Items")){
+    //         StartCoroutine(HurtAnimation());
+    //     }
+    // }
 
     public IEnumerator HurtAnimation(){
         RagdollOn();
@@ -147,7 +159,7 @@ public class Hitted : MonoBehaviour
             yield return null;
         }
 
-        transform.position = new Vector3(transforms[0].position.x-localpositions[0].x , 0f,  transforms[0].position.z-localpositions[0].z);
+        transform.position = new Vector3(transforms[0].position.x-localpositions[0].y , 0f,  transforms[0].position.z-localpositions[0].x);
         transforms[0].localPosition = new Vector3(localpositions[0].x , localpositions[0].y,  localpositions[0].z);
 
         GetComponent<Collider>().enabled = true;

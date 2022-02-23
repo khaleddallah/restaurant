@@ -19,7 +19,7 @@ public class Compono : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.CompareTag("bullet")){
+        if(collision.gameObject.CompareTag("Item")){
             Debug.Log("my name is "+gameObject.name);
             Debug.DrawRay(collision.GetContact(0).point, collision.relativeVelocity, Color.green, 100f);
             GetComponent<Rigidbody>().AddForce(collision.relativeVelocity * forceVal, ForceMode.Impulse);

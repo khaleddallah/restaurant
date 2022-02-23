@@ -64,12 +64,12 @@ public class Score : NetworkBehaviour
         GameObject tmp = items.transform.GetChild(index0).gameObject;
         Debug.Log("#-#");
         health -= hurtValue;
-        Destroy(tmp);
+        // Destroy(tmp);
         if(health>0){
             StartCoroutine(GetComponent<Hitted>().HurtAnimation());
         }
         else{
-            GetComponent<Hitted>().RagdollOn();
+            GetComponent<Hitted>().Dead();
         }
 
 
