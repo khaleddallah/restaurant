@@ -26,48 +26,13 @@ public class Score : NetworkBehaviour
         colliders = GetComponentsInChildren<Collider>();
         rbs = GetComponentsInChildren<Rigidbody>();
 
-        NFRagdoll(false);
+        GetComponent<Hitted>().RagdollOffBasic();
     }
 
     // Update is called once per frame
     void Update()
     {
         
-    }
-
-
-    public void NFRagdoll(bool ragdoll){
-        if(ragdoll){
-            Debug.Log("ragdoll");
-
-            foreach(Collider c in colliders){
-                c.enabled = true;
-            }
-            foreach(Rigidbody r in rbs){
-                r.isKinematic = false;
-                r.useGravity = true;
-            }
-            GetComponent<Rigidbody>().isKinematic = true;
-            GetComponent<Rigidbody>().useGravity = false;
-            GetComponent<CapsuleCollider>().enabled = false;
-            GetComponent<BoxCollider>().enabled = false;
-            GetComponent<Animator>().enabled = false;
-            GetComponent<Rigidbody>().AddForce(Vector3.up * 10, ForceMode.Impulse);
-        }
-        else{
-            Debug.Log("NOT ragdoll");
-            foreach(Collider c in colliders){
-                c.enabled = false;
-            }
-            foreach(Rigidbody r in rbs){
-                r.isKinematic = true;
-                r.useGravity = false;
-            }
-            GetComponent<Rigidbody>().isKinematic = false;
-            GetComponent<Rigidbody>().useGravity = true;
-            GetComponent<CapsuleCollider>().enabled = true;
-            GetComponent<BoxCollider>().enabled = true;
-        }
     }
 
 
@@ -100,10 +65,14 @@ public class Score : NetworkBehaviour
         Debug.Log("#-#");
         health -= hurtValue;
         Destroy(tmp);
-        if(health<0){
-            NFRagdoll(true);
-            // Destroy(gameObject);
+        if(health>0){
+            StartCoroutine(GetComponent<Hitted>().HurtAnimation());
         }
+        else{
+            GetComponent<Hitted>().RagdollOn();
+        }
+
+
     }
 
 
