@@ -41,8 +41,8 @@ public class Movement : NetworkBehaviour
         normalCvc = GameObject.FindGameObjectWithTag("Cam0").GetComponent<CinemachineVirtualCamera>();
         normalCvc.Follow = transform;
 
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked; 
+        // Cursor.visible = false;
+        // Cursor.lockState = CursorLockMode.Locked; 
         lastInput = new Vector3(0f, 0f, 0f);
     }
 

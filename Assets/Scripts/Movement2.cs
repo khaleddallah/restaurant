@@ -34,8 +34,8 @@ public class Movement2 : MonoBehaviour
         normalCvc = GameObject.FindGameObjectWithTag("Cam0").GetComponent<CinemachineVirtualCamera>();
         normalCvc.Follow = transform;
 
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked; 
+        // Cursor.visible = false;
+        // Cursor.lockState = CursorLockMode.Locked; 
     }
 
 
